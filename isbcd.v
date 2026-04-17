@@ -48,7 +48,7 @@ Variable A : Type.
 (** Formulas over the set of atoms [A] *)
 (**   with one constant Ω = [ovar None] *)
 Inductive form := ovar (_ : option A) | inter (_ _ : form) | arrow (_ _: form).
-Notation Ω := (ovar None).
+Abbreviation Ω := (ovar None).
 Infix "∩" := inter (at level 35).
 Infix "→" := arrow (at level 41, right associativity).
 
@@ -93,7 +93,7 @@ Qed.
 
 End Formulas.
 
-Notation Ω := (ovar None).
+Abbreviation Ω := (ovar None).
 Infix "∩" := inter (at level 35).
 Infix "→" := arrow (at level 41, right associativity).
 Notation "⋂→( a )" := (ia_formula a) (at level 0, format "⋂→( a )").
@@ -108,7 +108,7 @@ Record subtyping_data := {
   At :> Type;
   subat : crelation At;
   valueat : At -> @form At }.
-Notation δ x := (valueat _ x).
+Abbreviation δ x := (valueat _ x).
 Infix "≺" := (subat _) (at level 50).
 Infix "≺*" := (cclos_refl_trans (subat _)) (at level 50).
 
@@ -141,7 +141,7 @@ Arguments var_right [_ _ _ _ _ _ _ _] _, [_ _] _ [_ _ _ _ _] _.
 Arguments var_left [_ _ _ _ _ _ _ _] _, [_ _] _ [_ _ _ _ _] _.
 Arguments fsub [_] _.
 
-Notation ISat := (fsub (cclos_refl_trans (subat _))).
+Abbreviation ISat := (fsub (cclos_refl_trans (subat _))).
 
 Definition fsub_funct ST (LF1 LF2 : crelation ST.(At)) (H12 : forall u v, LF1 u v -> LF2 u v) a l b p q r :
   fsub LF1 p q r a l b -> fsub LF2 p q r a l b.
@@ -188,7 +188,7 @@ Defined.
 Section ProofTheory.
 
 Context {ST : subtyping_data}.
-Notation formula := (@form ST).
+Abbreviation formula := (@form ST).
 
 Implicit Type x y : ST.
 Implicit Type a b c : formula.
@@ -914,7 +914,7 @@ Arguments safe_subtyping_bcd : clear implicits.
 
 (** * Instances *)
 
-Notation avar := (fun x => ovar (Some x)).
+Abbreviation avar := (fun x => ovar (Some x)).
 
 (** ** [BCD] *)
 
