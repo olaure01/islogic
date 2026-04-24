@@ -1,3 +1,5 @@
 # -arg "-mangle-names '__'"
 
+-R . InterPT
+
 .
