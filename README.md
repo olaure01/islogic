@@ -2,6 +2,8 @@
 
 Lambek calculus and Intersection Subtyping Logic (IS)
 
+Formalization of the results presented at [LICS 2016](https://doi.org/10.4230/LIPIcs.LICS.2026.12) (see [links between results in the paper and Rocq statements](references.txt)).
+
 ## Installation
 
 Requires [OLlibs v2.1.1](https://github.com/olaure01/ollibs) (add-ons for the standard library): [see installation instructions](https://github.com/olaure01/ollibs/blob/master/README.md).

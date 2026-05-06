@@ -294,6 +294,7 @@ Proof. intros pi1 pi2. rewrite <- (app_nil_l _) in pi2. refine (lcut _ _ pi1 pi2
 
 (** ** Reversed system nLʳ *)
 
+(* Table 3 *)
 Reserved Notation "l ⊦r a" (at level 65, format "l  ⊦r  a").
 Inductive rlprove : list lform -> lform -> Type :=
 | rlidentity v x : [lvar v x] ⊦r lvar v x
@@ -596,6 +597,7 @@ intro pi. induction pi; try now constructor.
 - apply (@lfrl_left _ _ _ _ nil _ e IHpi).
 Qed.
 
+(* Proposition 9 *)
 Lemma lprove_rlprove l a : l ⊦ a -> l ⊦r a.
 Proof.
 intro pi.
@@ -607,6 +609,7 @@ induction pi; (try now constructor).
 - apply (rlfrl_left_gen _ _ _ _ _ e IHpi).
 Qed.
 
+(* Proposition 10 *)
 Lemma rlcut a b l1 l2 l3 :
   l2 ⊦r a -> l1 ++ a :: l3 ⊦r b -> l1 ++ l2 ++ l3 ⊦r b.
 Proof. intros pi1%rlprove_lprove pi2%rlprove_lprove. apply lprove_rlprove, (lcut _ _ pi1 pi2). Qed.

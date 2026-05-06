@@ -613,6 +613,7 @@ Proof. intros Hc pi. refine (hlsubst _ _ _ pi). apply (@hlfrl_left _ _ _ _ _ Hc)
 
 (** ** Equivalence with nIS *)
 
+(* Proposition 7 *)
 Lemma nish_nis l a : l ⊦ a -> nlprove l a.
 Proof.
 intro pi. induction pi; try now constructor.
@@ -621,6 +622,7 @@ intro pi. induction pi; try now constructor.
 - apply (nlfrl_left _ _ _ nil _ e). assumption.
 Qed.
 
+(* Proposition 7 *)
 Lemma nis_nish l a : nlprove l a -> l ⊦ a.
 Proof.
 intros pi. induction pi; try now constructor.
@@ -636,6 +638,7 @@ End nISh.
 
 (** ** Rules *)
 
+(* Table 2 *)
 Reserved Notation "l ⊦ a" (at level 65, format "l  ⊦  a").
 Inductive lprove : list lform -> lform -> Type :=
 | lidentity a : [a] ⊦ a
@@ -940,6 +943,7 @@ Proof. intros Hc pi. refine (lsubst _ _ _ pi). apply (@lfrl_left _ _ _ _ _ Hc), 
 
 (** ** Equivalence with nIS *)
 
+(* Theorem 13 *)
 Lemma nis1_nis l a : l ⊦ a -> nlprove l a.
 Proof.
 intro pi. induction pi; try now constructor.
@@ -948,6 +952,7 @@ intro pi. induction pi; try now constructor.
 - apply (nlfrl_left _ _ _ nil _ e). assumption.
 Qed.
 
+(* Theorem 13 *)
 Lemma nis_nis1 l a : l <> [] -> nlprove l a -> l ⊦ a.
 Proof.
 intros H1 pi. induction pi in H1 |- *.
@@ -969,6 +974,7 @@ Qed.
 
 (** * Reversed system nIS₁ʳ *)
 
+(* Table 4 *)
 Reserved Notation "l ⊦r a" (at level 65, format "l  ⊦r  a").
 Inductive rlprove : list lform -> lform -> Type :=
 | rlidentity v x : [lvar v x] ⊦r lvar v x
@@ -1244,6 +1250,7 @@ Qed.
 Lemma nis1r_nis1 l a : l ⊦r a -> l ⊦ a.
 Proof. intro pi. induction pi; try now constructor. apply (lfrl_left e IHpi). Qed.
 
+(* Proposition 11 and Theorem 13 *)
 Lemma nis1_nis1r l a : l ⊦ a -> l ⊦r a.
 Proof.
 intro pi.
@@ -1255,6 +1262,7 @@ induction pi; (try now constructor).
 - apply (rlfrl_left_gen _ _ _ nil _ e IHpi).
 Qed.
 
+(* Proposition 11 and Theorem 13 *)
 Lemma rlcut a b l1 l2 l3 : (l1 <> [] -> length l2 = 1%nat) ->
   l2 ⊦r a -> l1 ++ a :: l3 ⊦r b -> l1 ++ l2 ++ l3 ⊦r b.
 Proof. intros HS pi1%nis1r_nis1 pi2%nis1r_nis1. apply nis1_nis1r, (lcut _ HS pi1 pi2). Qed.
@@ -1302,12 +1310,14 @@ Qed.
 Definition id_formula_l := var 2 / (var 1 / var 1).
 Definition id_formula_r := var 2.
 
+(* Example 12 *)
 Lemma id_formula_not_nis1r : notT ([id_formula_l] ⊦r id_formula_r).
 Proof. intros [[] [=]]%rlmap_left_inv. Qed.
 
 Definition comp_formula_l := var 3 / var 2.
 Definition comp_formula_r := (var 3 / var 1) / (var 2 / var 1).
 
+(* Example 12 *)
 Lemma comp_formula_not_nis1r : notT ([comp_formula_l] ⊦r comp_formula_r).
 Proof.
 intros pi%rlmap_right_inv%rlmap_right_inv. list_simpl in pi.

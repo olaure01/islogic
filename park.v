@@ -51,6 +51,7 @@ Qed.
 
 (** * System IS Park*)
 
+(* Table 10 *)
 Reserved Notation "a ❘ l ⊦ b" (at level 65, l at next level, b at next level).
 Reserved Notation "a ❘ ⊦ b" (at level 65, b at next level).
 Inductive pk_sub : list form -> crelation form :=
@@ -122,6 +123,7 @@ remember Ω as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
   exists (pk_arrow_right pi'). reflexivity.
 Qed.
 
+(* Lemma 33 *)
 Lemma pk_var_right_wk_weight (x : Atom) c l (pi : c ❘ l ⊦ x) l0 (HF : ForallT (fun u => u ❘ ⊦ x) l0) :
   { pi' : c ❘ l ++ l0 ⊦ x | pk_weight pi' = pk_weight pi + pk_Fweight HF }.
 Proof.
@@ -140,6 +142,7 @@ remember (var x) as q eqn:Ho. induction pi in Ho, HF |- *; destr_eq Ho; subst.
   simpl pk_weight. fold pk_Fweight. lia.
 Qed.
 
+(* Lemma 33 *)
 Lemma pk_var_left_wk_weight (x : Atom) c l (pi : x ❘ l ⊦ c) l0 (HF : ForallT (fun u => u ❘ ⊦ x) l0) :
   { pi' : x ❘ l0 ++ l ⊦ c | pk_weight pi' <= pk_Fweight HF + pk_weight pi }.
 Proof.
@@ -159,6 +162,7 @@ Qed.
 
 (** * Transitivity *)
 
+(* Theorem 34 *)
 Lemma pk_sub_trans_rules s :
   ((forall a b c d l1 l2 (pi1 : a ❘ ⊦ b) (pi2 : c ❘ l1 ++ b :: l2 ⊦ d),
       s = pk_weight pi1 + pk_weight pi2 -> { pi : c ❘ l1 ++ a :: l2 ⊦ d | pk_weight pi <= s })
@@ -382,6 +386,7 @@ clear IHs. destruct pi.
       intros. apply (IH _ _ _ pi' ltac:(cbn in *; lia)).
 Qed.
 
+(* Proposition 35 *)
 Theorem pk_bcd_equiv a b : a ⩽ b <=> a ❘ ⊦ b.
 Proof.
 split; intro H.
@@ -396,6 +401,7 @@ Qed.
 
 (** * Beta Condition *)
 
+(* Lemma 36 *)
 Lemma pk_beta_list s a l b : ForallT (fun z => fst z <> nil) s -> form_recomposition s ❘ a :: l ⊦ b ->
   { s0 & sublistT s0 s & (ForallT (pk_sub nil a) (arrow_tl s0)
                        * (form_recomposition (arrow_hd s0) ❘ l ⊦ b))%type }.

@@ -441,9 +441,11 @@ Qed.
 
 (** ** Equivalence with ∀IS *)
 
+(* Theorem 13 *)
 Lemma fis1_fis l a : l ⊦ a -> fisprove l a.
 Proof. intro pi. induction pi; try now constructor. apply (fisfrl_left _ _ _ nil _ e). assumption. Qed.
 
+(* Theorem 13 *)
 Lemma fis_fis1 l a : l <> [] -> fisprove l a -> l ⊦ a.
 Proof.
 intros H1 pi. induction pi in H1 |- *.
@@ -606,9 +608,11 @@ repeat split.
 Qed.
 
 
+(* Theorem 13 *)
 Lemma fis1r_fis1 l a : l ⊦r a -> l ⊦ a.
 Proof. intro pi. induction pi; try now constructor. apply (lfrl_left e IHpi). Qed.
 
+(* Theorem 13 *)
 Lemma fis1_fis1r l a : l ⊦ a -> l ⊦r a.
 Proof.
 intro pi.
@@ -634,6 +638,7 @@ Proof. intros pi1 pi2. rewrite <- (app_nil_l _) in pi2. refine (rlcut _ _ pi1 pi
 
 Section Mitchell.
 
+(* Table 11 *)
 (* "original": requires alpha-renaming
 Reserved Notation "a ≤ b" (at level 70).
 Inductive m_sub : crelation fform :=
@@ -708,6 +713,7 @@ End Mitchell.
 
 Section LMS.
 
+(* Table 12 *)
 Reserved Notation "a ≤ b" (at level 70).
 Inductive lms_sub : crelation fform :=
 | lms_identity a : a ≤ a

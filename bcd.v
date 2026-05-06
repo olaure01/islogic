@@ -11,6 +11,7 @@ Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
 
+(* Tables 5 and 7 *)
 Reserved Notation "a ≤ b" (at level 70).
 Inductive bcd_sub {lax : list (Atom -> form * form)} : crelation form :=
 | bcd_identity a : a ≤ a
@@ -72,6 +73,7 @@ split; [ apply bcd_inter_left1 | ].
 transitivity (a ∩ a); [ apply bcd_inter_right | apply bcd_inter; constructor ].
 Qed.
 
+(* Example 16 *)
 Example bcd_arrow_inter_distr a b c : a → (b ∩ c) ≡ (a → b) ∩ (a → c).
 Proof.
 split; [ | apply bcd_arrow_inter ].
@@ -79,6 +81,7 @@ transitivity ((a → b ∩ c) ∩ (a → b ∩ c));
   [ apply bcd_inter_right | apply bcd_inter; apply bcd_arrow; constructor ].
 Qed.
 
+(* Example 16 *)
 Example bcd_arrow_omega_distr a : a → Ω ≡ Ω.
 Proof.
 split; [ apply bcd_omega_right | ].

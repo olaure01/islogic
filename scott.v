@@ -19,6 +19,7 @@ Definition stoup := option form.
 Coercion St := Some : form -> stoup.
 Definition Fm (p : stoup) := match p with None => Ω | Some a => a end.
 
+(* Table 9 *)
 Reserved Notation "p ❘ l ⊦ b" (at level 65, l at next level, b at next level).
 Inductive sc_sub : list form -> stoup -> form -> Type :=
 | sc_omega_right p l : p ❘ l ⊦ Ω
@@ -72,6 +73,7 @@ Proof. induction a; repeat constructor; assumption. Qed.
 Lemma is_sc l a b : iis1.sub l a b -> a ❘ l ⊦ b.
 Proof. intro pi. induction pi; [ apply sc_identity | constructor; assumption .. ]. Qed.
 
+(* Lemma 28 *)
 Lemma sc_None_left_rev_weight a l (pi : None ❘ l ⊦ a) p l0 : { pi' : p ❘ l0 ⊦ a | sc_weight pi' = sc_weight pi }.
 Proof.
 remember None as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
@@ -82,6 +84,7 @@ remember None as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
   exists (sc_arrow_right pi'). reflexivity.
 Qed.
 
+(* Lemma 28 *)
 Lemma sc_omega_left_rev_weight a l (pi : Ω ❘ l ⊦ a) p l0 : { pi' : p ❘ l0 ⊦ a | sc_weight pi' = sc_weight pi }.
 Proof.
 remember (St Ω) as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
@@ -92,6 +95,7 @@ remember (St Ω) as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
   exists (sc_arrow_right pi'). reflexivity.
 Qed.
 
+(* Lemma 29 *)
 Lemma sc_var_left_wk x l c (pi : var x ❘ l ⊦ c) l0 : { pi' : var x ❘ l0 ++ l ⊦ c | sc_weight pi' = sc_weight pi }.
 Proof.
 remember (St (var x)) as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
@@ -104,6 +108,7 @@ remember (St (var x)) as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; sub
 - exists sc_var_left. reflexivity.
 Qed.
 
+(* Lemma 29 *)
 Lemma sc_var_right_wk p l x (pi : p ❘ l ⊦ var x) l0 : { pi' : p ❘ l ++ l0 ⊦ var x | sc_weight pi' = sc_weight pi }.
 Proof.
 remember (var x) as c eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
@@ -121,6 +126,7 @@ Qed.
 
 (** * Transitivity *)
 
+(* Theorem 30 *)
 Lemma sc_sub_trans_rules s :
   ((forall (a b : form) p d l1 l2 (pi1 : a ❘ ⊦ b) (pi2 : p ❘ l1 ++ b :: l2 ⊦ d),
       s = sc_weight pi1 + sc_weight pi2 -> { pi : p ❘ l1 ++ a :: l2 ⊦ d | sc_weight pi <= s })
@@ -303,6 +309,7 @@ intro pi. induction_sc_sub pi p x a' b' c' d' l pi1 pi2 IH1 IH2.
   + apply bcd_sc_list.
 Qed.
 
+(* Proposition 31 *)
 Theorem sc_bcd_equiv a b : a ⩽ b <=> a ❘ ⊦ b.
 Proof.
 split; intro H.
@@ -318,6 +325,7 @@ Qed.
 
 (** * Beta Condition *)
 
+(* Lemma 32 *)
 Lemma sc_beta_list s a l b : ForallT (fun z => fst z <> nil) s -> form_recomposition s ❘ a :: l ⊦ b ->
   { s0 & sublistT s0 s & (ForallT (sc_sub nil a) (arrow_tl s0)
                        * (form_recomposition (arrow_hd s0) ❘ l ⊦ b))%type }.

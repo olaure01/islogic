@@ -31,6 +31,7 @@ intro a. induction a as [ | | a1 IH1 a2 IH2 | a1 IH1 a2 IH2 ]; intros [] [=]; su
 - erewrite IH1; [ | eassumption ]. erewrite IH2; [ | eassumption ]. reflexivity.
 Qed.
 
+(* Proposition 21 *)
 Lemma correct_gtrans a l b : a ❘ l ⊦ b -> gtrans a :: map (fun z => nn (gtrans z)) l ⊦ gtrans b.
 Proof.
 intro H. induction_sub H a b c d l pi1 pi2 IH1 IH2; cbn; try now (rewrite <- app_nil_l at 1; constructor).
@@ -49,6 +50,7 @@ intro H. induction_sub H a b c d l pi1 pi2 IH1 IH2; cbn; try now (rewrite <- app
 Qed.
 
 
+(* Lemma 23 *)
 Lemma unprov_trans_var v l1 l2 :
   map (fun z => nn (gtrans z)) l1 ++ map gtrans l2 ⊦ lvar v -> l1 = [] /\ 1 < v.
 Proof.
@@ -126,6 +128,7 @@ destruct pi; try now destr_eq Hl; cbn in IH.
     destruct (IH _ _ _ _ pi2) as [_ [Heq _]]; [ lia | decomp_list_eq Heq ].
 Qed.
 
+(* Lemma 22 *)
 Lemma unprov_trans_n v l1 l2 a
   (pi : map (fun z => nn z) l1 ++ lvar 1 / a :: l2 ⊦ lvar v) :
     (v = 0 -> { B | l1 = [B] }) * (v = 1 -> l1 = [])
@@ -184,6 +187,7 @@ destruct pi; try now destr_eq Hl; cbn in IH.
     exists (lmap_left _ _ _ pi1 pi2'). cbn. lia.
 Qed.
 
+(* Proposition 24 *)
 Lemma complete_gtrans a l b : gtrans a :: map (fun z => nn (gtrans z)) l ⊦ gtrans b -> a ❘ l ⊦ b.
 Proof.
 intro pi.
@@ -279,6 +283,7 @@ intro pi. induction_sub pi a b c d l pi1 pi2 IH1 IH2.
 - rewrite list2form_last in IH1. assumption.
 Qed.
 
+(* Theorem 19 *)
 Theorem is_bcd_equiv a b : a ⩽ b <=> a ❘ ⊦ b.
 Proof.
 split; intro H.

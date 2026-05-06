@@ -56,6 +56,7 @@ induction a as [ x | | a1 IH1 a2 IH2 | a1 IH1 a2 IH2 ]; constructor.
 - apply rev_arrow_left_gen; assumption.
 Qed.
 
+(* Theorem 19 *)
 Theorem iis1_iis1r l a b : a ❘ l ⊦ b <=> a ❘ l ⊦° b.
 Proof.
 split; intro H; induction H; try now constructor.

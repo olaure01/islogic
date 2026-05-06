@@ -272,6 +272,7 @@ Qed.
 
 (** * Beta condition *)
 
+(* Lemma 17 *)
 Lemma bcd_beta : beta_condition (@bcd_sub nil).
 Proof.
 intros s a b Hnil Hsub%sub_form_decomposition.
@@ -385,6 +386,7 @@ Qed.
 
 (** * Eta condition fails *)
 
+(* Lemma 18 *)
 Lemma bcd_not_eta : notT (eta_condition (@bcd_equiv nil)).
 Proof.
 intro He. specialize (He (var 0)) as [s Hs [Hsx [n Hxs]%var_sub]].

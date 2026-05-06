@@ -208,6 +208,7 @@ Qed.
 
 (** * Beta Condition *)
 
+(* Lemma 20 *)
 Lemma IS_beta_list s a l b : ForallT (fun z => fst z <> nil) s -> form_recomposition s ❘ a :: l ⊦ b ->
   { s0 & sublistT s0 s & (ForallT (sub nil a) (arrow_tl s0) * (form_recomposition (arrow_hd s0) ❘ l ⊦ b))%type }.
 Proof.

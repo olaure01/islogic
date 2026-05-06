@@ -13,6 +13,7 @@ Unset Printing Use Implicit Types.
 
 (** * System B+ *)
 
+(* Table 8 *)
 Inductive bp : form -> Type :=
 | bp_id a : bp (a → a)
 | bp_pl b a : bp (a ∩ b → a)
@@ -75,5 +76,6 @@ intro pi. induction pi.
 - rewrite <- list2form_last. assumption.
 Qed.
 
+(* Theorem 27 *)
 Lemma bp_is_equiv a : bp a <=> ⊦ a.
 Proof. split; [ apply bp_is | apply is_bp ]. Qed.

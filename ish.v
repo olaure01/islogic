@@ -16,6 +16,7 @@ Unset Printing Use Implicit Types.
 
 (** ** Rules *)
 
+(* Table 1, black part only *)
 Reserved Notation "l ⊦ a" (at level 65, format "l ⊦  a").
 Inductive lprove : list lform -> lform -> Type :=
 | lidentity a : [a] ⊦ a
@@ -204,6 +205,7 @@ Ltac solve_bp2 H :=
   let Hd := fresh in
   now intro Hl; destruct (H Hl) as [d Hd]; decomp_list_eq Hd; (try discriminate); eexists.
 
+(* Theorem 5 *)
 Lemma lprove_trans_weight a b l1 l2 l3 (pi1 : l2 ⊦ a) (pi2 : l1 ++ a :: l3 ⊦ b) :
   (l1 <> [] -> length l2 = 1%nat) ->
   { pi' : l1 ++ l2 ++ l3 ⊦ b | lweight pi' < lweight pi1 + lweight pi2 }.
@@ -657,6 +659,7 @@ Qed.
 
 From InterPT Require lambek_is.
 
+(* Example 6 *)
 Lemma plus_formula_not_ish : notT ([lambek_is.plus_formula_l] ⊦ lambek_is.plus_formula_r).
 Proof.
 intros pi%lmap_right_inv.

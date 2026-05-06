@@ -24,6 +24,7 @@ Qed.
 
 (** ** Rules *)
 
+(* Table 1 *)
 Reserved Notation "l ⎹ bp ⊦ a" (at level 65, format "l ⎹ bp ⊦  a").
 (** value [true] for [bp] activates the S-constraint *)
 Inductive lprove {bp : bool} : list lform -> lform -> Type :=
@@ -231,6 +232,7 @@ Ltac solve_bp2 H :=
   let Hd := fresh in
   now intros Hp Hl; destruct (H Hp Hl) as [d Hd]; decomp_list_eq Hd; (try discriminate); eexists.
 
+(* Theorems 1 and 4 *)
 Lemma lprove_trans_weight a b l1 l2 l3 (pi1 : l2 ⊦ a) (pi2 : l1 ++ a :: l3 ⊦ b) :
   (bp = true -> l1 <> [] -> length l2 = 1%nat) ->
   { pi' : l1 ++ l2 ++ l3 ⊦ b | lweight pi' < lweight pi1 + lweight pi2 }.
@@ -755,6 +757,7 @@ intros pi1 pi2. rewrite <- (app_nil_l _) in pi2. refine (lcut _ _ pi1 pi2).
 intros _ Hnil. now contradiction Hnil.
 Qed.
 
+(* Lemma 2 *)
 Lemma lmap_right_inv a b l : l ⊦ b / a -> l · a ⊦ b.
 Proof.
 intro pi.
@@ -779,6 +782,7 @@ End WithParameter.
 Definition comp_formula_l := var 3 / var 2.
 Definition comp_formula_r := (var 3 / var 1) / (var 2 / var 1).
 
+(* Example 3 *)
 Lemma comp_formula_lambek : @lprove false [comp_formula_l] comp_formula_r.
 Proof.
 apply lmap_right, lmap_right.
@@ -794,6 +798,7 @@ list_simpl. cons2app. rewrite <- (app_nil_r (_ ++ var 1 :: nil)). apply (@lcut _
   + apply lidentity.
 Qed.
 
+(* Example 3 *)
 Lemma comp_formula_not_is : notT (@lprove true [comp_formula_l] comp_formula_r).
 Proof.
 intros pi%lmap_right_inv%lmap_right_inv.
@@ -866,6 +871,7 @@ Qed.
 Definition plus_formula_l := (var 3 / var 1) ∧ (var 3 / var 2).
 Definition plus_formula_r := var 3 / (var 1 ∨ var 2) ∧ var 4.
 
+(* Example 6 *)
 Lemma plus_formula_is : @lprove true [plus_formula_l] plus_formula_r.
 Proof.
 apply lmap_right.

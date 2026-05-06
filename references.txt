@@ -1,0 +1,64 @@
+Statements associated with the main results of
+  https://doi.org/10.4230/LIPIcs.LICS.2026.12
+
+Theorems 1 and 4
+  lambek_is.v:lprove_trans_weight
+Lemma 2
+  lambek_is.v:lmap_right_inv
+Example 3
+  lambek_is.v:comp_formula_lambek  lambek_is.v:comp_formula_not_is
+Theorem 5
+  ish.v:lprove_trans_weight
+Example 6
+  lambek_is.v:plus_formula_is  ish.v:plus_formula_not_ish
+Proposition 7
+  nis.v:nish_nis  nis.v:nis_nish
+Proposition 9
+  nlambek.v:lprove_rlprove
+Proposition 10
+  nlambek.v:rlcut
+Proposition 11
+  nis.v:nis1_nis1r  nis.v:rlcut
+Example 12
+  nis.v:id_formula_not_nis1r  nis.v:comp_formula_not_nis1r
+Theorem 13
+  fis.v:fis1_fis  fis.v:fis_fis1  fis.v:fis1r_fis1  fis.v:fis1_fis1r  (for the ∀IS part)
+  nis.v:nis1_nis  nis.v:nis_nis1  nis.v:nis1r_nis1  nis.v:nis1_nis1r  (for the ∩IS part)
+Example 16
+  bcd.v:bcd_arrow_omega_distr  bcd.v:bcd_arrow_inter_distr
+Lemma 17
+  bcd_prop.v:bcd_beta
+Lemma 18
+  bcd_prop.v:bcd_not_eta
+Theorem 19
+  equivalences.v:is_bcd_equiv  iis1r.v:iis1_iis1r
+Lemma 20
+  iis1_prop.v:IS_beta_list
+Proposition 21
+  equivalences.v:correct_gtrans
+Lemma 22
+  equivalences.v:unprov_trans_n
+Lemma 23
+  equivalences.v:unprov_trans_var
+Proposition 24
+  equivalences.v:complete_gtrans
+Theorem 27
+  relevant.v:bp_is_equiv
+Lemma 28
+  scott.v:sc_None_left_rev_weight  scott.v:sc_omega_left_rev_weight
+Lemma 29
+  scott.v:sc_var_left_wk  scott.v:sc_var_right_wk
+Theorem 30
+  scott.v:sc_sub_trans_rules
+Proposition 31
+  scott.v:sc_bcd_equiv
+Lemma 32
+  scott.v:sc_beta_list
+Lemma 33
+  park.v:pk_var_left_wk_weight  park.v:pk_var_right_wk_weight
+Theorem 34
+  park.v:pk_sub_trans_rules
+Proposition 35
+  park.v:pk_bcd_equiv
+Lemma 36
+  park.v:pk_beta_list
