@@ -64,13 +64,13 @@ Fixpoint sc_weight a l b (pi : a ❘ l ⊦ b) := S
   end.
 
 Lemma eq_scott (x : Atom) : x ⟛ Ω → x.
-Proof. repeat constructor; fail. Qed.
+Proof. repeat constructor. Qed.
 
 Lemma sc_identity a : a ❘ ⊦ a.
-Proof. induction a as [ | | | a1 IH1 a2 IH2 ]; try now repeat constructor. Qed.
+Proof. induction a; repeat constructor; assumption. Qed.
 
 Lemma is_sc l a b : iis1.sub l a b -> a ❘ l ⊦ b.
-Proof. intro pi. induction pi; try now constructor. apply sc_identity. Qed.
+Proof. intro pi. induction pi; [ apply sc_identity | constructor; assumption .. ]. Qed.
 
 Lemma sc_None_left_rev_weight a l (pi : None ❘ l ⊦ a) p l0 : { pi' : p ❘ l0 ⊦ a | sc_weight pi' = sc_weight pi }.
 Proof.

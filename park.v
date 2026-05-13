@@ -104,13 +104,13 @@ Definition pk_sub_equiv a b := ((a ❘ ⊦ b) * (b ❘ ⊦ a))%type.
 Infix "⟛" := pk_sub_equiv (at level 65).
 
 Lemma eq_park (x : Atom) : x ⟛ x → x.
-Proof. repeat constructor; fail. Qed.
+Proof. repeat constructor. Qed.
 
 Lemma pk_identity a : a ❘ ⊦ a.
-Proof. induction a; now repeat constructor. Qed.
+Proof. induction a; repeat constructor; assumption. Qed.
 
 Lemma is_pk l a b : iis1.sub l a b -> a ❘ l ⊦ b.
-Proof. intro pi. induction pi; try now constructor. apply pk_identity. Qed.
+Proof. intro pi. induction pi; [ apply pk_identity | constructor; assumption .. ]. Qed.
 
 Lemma pk_omega_left_rev_weight c l (pi : Ω ❘ l ⊦ c) a l0 : { pi' : a ❘ l0 ⊦ c | pk_weight pi' = pk_weight pi }.
 Proof.
