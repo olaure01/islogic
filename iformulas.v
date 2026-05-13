@@ -14,7 +14,7 @@ Unset Printing Use Implicit Types.
 
 
 (** * Definition *)
-(* TODO if [Atom] is in [Set] then proof types as well and then setoid_rewriting has troubles *)
+(* if [Atom] is in [Set] then proof types as well and then setoid_rewriting has troubles *)
 Definition Atom : Type := nat.
 
 Inductive form := var (_ : Atom) | omega | inter (_ _ : form) | arrow (_ _ : form).
@@ -202,8 +202,8 @@ induction s as [[ | (t, h) [ | (t', h') s ] ] IH ] using hrect.
       -- assumption.
 Qed.
 
-(* TODO not structural, because of exchange of parameters, use sum of sizes for example *)
-(*
+(* not structural, because of exchange of parameters, use sum of sizes for example
+
 Fixpoint form_hdecomposition_le s1 s2 :=
   match s1, s2 with
   | hdcmp_constr l1, hdcmp_constr l2 => 
