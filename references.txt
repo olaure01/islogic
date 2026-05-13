@@ -55,7 +55,7 @@ Proposition 31
 Lemma 32
   scott.v:sc_beta_list
 Lemma 33
-  park.v:pk_var_left_wk_weight  park.v:pk_var_right_wk_weight
+  park.v:pk_var_left_wk  park.v:pk_var_right_wk
 Theorem 34
   park.v:pk_sub_trans_rules
 Proposition 35

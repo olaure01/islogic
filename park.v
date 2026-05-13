@@ -13,9 +13,20 @@ Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
 
-(* TODO Transparent version of [ForallT_app]: add to stdlib/ollibs? *)
+(* Transparent version of [ForallT_app] *)
 Definition ForallT_app_transp A (P : A -> Type) l1 l2 : ForallT P l1 -> ForallT P l2 -> ForallT P (l1 ++ l2).
 Proof. intros H1 H2. induction H1 as [ | a l Ha Hl IH ]; [ exact H2 | exact (ForallT_cons _ Ha IH) ]. Defined.
+
+Lemma ForallT_nil_decomp_dec A (Hdec : forall x y : A, {x = y} + {x <> y}) (P : A -> Type) (H : ForallT P nil) :
+  H = ForallT_nil P.
+Proof.
+enough (forall l (Hl : l = nil) (HF : ForallT P l), rew Hl in HF = ForallT_nil P) as HH by apply (HH _ eq_refl).
+clear H. intros l Hl HF.
+destruct HF.
+- enough (Hl = eq_refl) by now subst.
+  apply Eqdep_dec.UIP_dec, List.list_eq_dec, Hdec.
+- discriminate Hl.
+Qed.
 
 Lemma ForallT_cons_decomp A (P : A -> Type) l (H : ForallT P l) : l <> nil ->
   {'(a', l') & {'(Heq, Ha, Hl) : (a' :: l' = l) * P a' * ForallT P l' | H = rew Heq in ForallT_cons _ Ha Hl } }.
@@ -24,9 +35,6 @@ destruct H as [ | a' l' P' H' ]; [ now intro Hnil; contradiction Hnil | intros _
 exists (a', l'), (eq_refl, P', H'). reflexivity.
 Qed.
 
-(* TODO the assumption about decidability of equality is possibly not needed in the end
-   since the decomposition results are mostly used through size properties
-   which should hold up to equality *)
 Lemma ForallT_cons_decomp_dec A (Hdec : forall x y : A, {x = y} + {x <> y}) (P : A -> Type)
   a l (H : ForallT P (a :: l)) :
   {'(Ha, Hl) : P a * ForallT P l | H = ForallT_cons _ Ha Hl }.
@@ -124,39 +132,66 @@ remember Ω as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
 Qed.
 
 (* Lemma 33 *)
-Lemma pk_var_right_wk_weight (x : Atom) c l (pi : c ❘ l ⊦ x) l0 (HF : ForallT (fun u => u ❘ ⊦ x) l0) :
+Lemma pk_var_right_wk (x : Atom) c l d (pi1 : c ❘ l ⊦ x) (pi2 : d ❘ ⊦ x) :
+  { pi' : c ❘ l  · d ⊦ x | pk_weight pi' = pk_weight pi1 + pk_weight pi2 }.
+Proof.
+remember (var x) as q eqn:Ho. induction pi1 in Ho, pi2 |- *; destr_eq Ho; subst.
+- destruct (IHpi1 eq_refl pi2) as [pi' Hw].
+  exists (pk_inter_left1 pi'). cbn. lia.
+- destruct (IHpi1 eq_refl pi2) as [pi' Hw].
+  exists (pk_inter_left2 pi'). cbn. lia.
+- destruct (IHpi1_2 eq_refl pi2) as [pi' Hw].
+  exists (pk_arrow_left pi1_1 pi'). cbn. lia.
+- exists (pk_var_left (ForallT_app_transp f (ForallT_cons _ pi2 (ForallT_nil _)))).
+  simpl pk_weight at 1. rewrite pk_Fweight_app.
+  simpl pk_weight. fold pk_Fweight. cbn. lia.
+- exists (pk_var_right pi1_1 pi1_2 (ForallT_app_transp f (ForallT_cons _ pi2 (ForallT_nil _)))).
+  simpl pk_weight at 1. rewrite pk_Fweight_app.
+  simpl pk_weight. fold pk_Fweight. cbn. lia.
+Qed.
+
+Lemma pk_var_right_wk_gen (x : Atom) c l l0 (pi : c ❘ l ⊦ x) (HF : ForallT (fun u => u ❘ ⊦ x) l0) :
   { pi' : c ❘ l ++ l0 ⊦ x | pk_weight pi' = pk_weight pi + pk_Fweight HF }.
 Proof.
-remember (var x) as q eqn:Ho. induction pi in Ho, HF |- *; destr_eq Ho; subst.
-- destruct (IHpi eq_refl HF) as [pi' Hw].
-  exists (pk_inter_left1 pi'). cbn. lia.
-- destruct (IHpi eq_refl HF) as [pi' Hw].
-  exists (pk_inter_left2 pi'). cbn. lia.
-- destruct (IHpi2 eq_refl HF) as [pi' Hw].
-  exists (pk_arrow_left pi1 pi'). cbn. lia.
-- exists (pk_var_left (ForallT_app_transp f HF)).
-  simpl pk_weight at 1. rewrite pk_Fweight_app.
-  simpl pk_weight. fold pk_Fweight. lia.
-- exists (pk_var_right pi1 pi2 (ForallT_app_transp f HF)).
-  simpl pk_weight at 1. rewrite pk_Fweight_app.
-  simpl pk_weight. fold pk_Fweight. lia.
+induction l0 as [ | e l0 IH ] using rev_rect.
+- list_simpl. exists pi.
+  assert (H := ForallT_nil_decomp_dec (@eq_dt_dec form_dectype) HF).
+  rewrite H. cbn. lia.
+- destruct (ForallT_app_decomp_dec (@eq_dt_dec form_dectype) _ _ HF) as [[HF1 HF2] ->].
+  destruct (ForallT_cons_decomp_dec (@eq_dt_dec form_dectype) HF2) as [[pi' HF'] ->].
+  rewrite (ForallT_nil_decomp_dec (@eq_dt_dec form_dectype) HF').
+  rewrite app_assoc.
+  destruct (IH HF1) as [pi'' Hs].
+  destruct (pk_var_right_wk pi'' pi') as [pi''' Hs'].
+  exists pi'''. cbn. rewrite pk_Fweight_app. cbn. lia.
 Qed.
 
 (* Lemma 33 *)
-Lemma pk_var_left_wk_weight (x : Atom) c l (pi : x ❘ l ⊦ c) l0 (HF : ForallT (fun u => u ❘ ⊦ x) l0) :
+Lemma pk_var_left_wk (x : Atom) c l d (pi1 : x ❘ l ⊦ c) (pi2 : d ❘ ⊦ x) :
+  { pi' : x ❘ d :: l ⊦ c | pk_weight pi' <= pk_weight pi1 + pk_weight pi2 }.
+Proof.
+remember (var x) as q eqn:Ho. induction pi1 in Ho, pi2 |- *; destr_eq Ho; subst.
+- exists pk_omega_right. cbn. lia.
+- destruct (IHpi1_1 eq_refl pi2) as [pi1' Hw1].
+  destruct (IHpi1_2 eq_refl pi2) as [pi2' Hw2].
+  exists (pk_inter_right pi1' pi2'). cbn. lia.
+- destruct (IHpi1 eq_refl pi2) as [pi' Hw].
+  revert pi' Hw. rewrite app_comm_cons. intros pi' Hw.
+  exists (pk_arrow_right pi'). cbn in *. lia.
+- exists (pk_var_left (ForallT_cons _ pi2 f)).
+  simpl pk_weight. lia.
+Qed.
+
+Lemma pk_var_left_wk_gen (x : Atom) c l l0 (pi : x ❘ l ⊦ c) (HF : ForallT (fun u => u ❘ ⊦ x) l0) :
   { pi' : x ❘ l0 ++ l ⊦ c | pk_weight pi' <= pk_Fweight HF + pk_weight pi }.
 Proof.
-remember (var x) as q eqn:Ho. induction pi in Ho, HF |- *; destr_eq Ho; subst.
-- exists pk_omega_right. cbn. lia.
-- destruct (IHpi1 eq_refl HF) as [pi1' Hw1].
-  destruct (IHpi2 eq_refl HF) as [pi2' Hw2].
-  exists (pk_inter_right pi1' pi2'). cbn. lia.
-- destruct (IHpi eq_refl HF) as [pi' Hw].
-  revert pi' Hw. rewrite app_assoc. intros pi' Hw.
-  exists (pk_arrow_right pi'). cbn. lia.
-- exists (pk_var_left (ForallT_app_transp HF f)).
-  simpl pk_weight at 1. rewrite pk_Fweight_app.
-  simpl pk_weight. fold pk_Fweight. lia.
+induction l0 as [ | e l0 IH].
+- exists pi. cbn. lia.
+- rewrite <- app_comm_cons.
+  destruct (ForallT_cons_decomp_dec (@eq_dt_dec form_dectype) HF) as [[pi' HF'] ->].
+  destruct (IH HF') as [pi'' Hs].
+  destruct (pk_var_left_wk pi'' pi') as [pi''' Hs'].
+  exists pi'''. cbn. lia.
 Qed.
 
 
@@ -247,9 +282,9 @@ clear IH. split; [ split | ].
     * destruct (IH2 _ _ _ _ _ pi1 pi2_2) as [pi' Hs']; [ cbn; lia | ].
       revert pi' Hs'. rewrite app_nil_r. intros pi' Hs'.
       destruct (IH3 _ _ _ _ pi2_1 pi') as [pi'' Hs'']; [ cbn; lia | ].
-      destruct (pk_var_right_wk_weight pi'' f) as [pi''' Hs'''].
+      destruct (pk_var_right_wk_gen pi'' f) as [pi''' Hs'''].
       exists pi'''. simpl pk_weight. fold pk_Fweight. lia.
-  + destruct (pk_var_left_wk_weight pi2 f) as [pi' Hs].
+  + destruct (pk_var_left_wk_gen pi2 f) as [pi' Hs].
     exists pi'. simpl pk_weight. fold pk_Fweight. lia.
   + simpl pk_weight in *. fold pk_Fweight in *.
     remember (var x) as e eqn:He. destruct pi2; destr_eq He; subst.
@@ -321,7 +356,7 @@ revert a b Heqe c l Heql'. induction pi;
   + split; [ right | ]; apply pk_arrow_right, (pk_omega_left_rev _ _ Hl).
 - inversion_clear f. split.
   + left. transitivity (var x); assumption.
-  + apply (pk_var_right_wk_weight pi2). assumption.
+  + apply (pk_var_right_wk_gen pi2). assumption.
 Qed.
 
 
@@ -478,7 +513,7 @@ induction pi; intros s Hs0 a' l' Hl0 Hnil; destr_eq Hl0; subst.
   exists [(c :: t, h)]; [ | split ].
   + reflexivity.
   + repeat constructor. transitivity (var x); assumption.
-  + apply (pk_var_right_wk_weight pi2). assumption.
+  + apply (pk_var_right_wk_gen pi2). assumption.
 Qed.
 
 Lemma pk_beta : beta_condition (pk_sub nil).

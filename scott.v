@@ -96,31 +96,50 @@ remember (St Ω) as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
 Qed.
 
 (* Lemma 29 *)
-Lemma sc_var_left_wk x l c (pi : var x ❘ l ⊦ c) l0 : { pi' : var x ❘ l0 ++ l ⊦ c | sc_weight pi' = sc_weight pi }.
+Lemma sc_var_left_wk x l c d (pi : var x ❘ l ⊦ c): { pi' : var x ❘ d :: l ⊦ c | sc_weight pi' = sc_weight pi }.
 Proof.
-remember (St (var x)) as q eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
+remember (St (var x)) as q eqn:Ho. induction pi in Ho |- *; destr_eq Ho; subst.
 - exists sc_omega_right. reflexivity.
-- cbn. destruct (IHpi1 eq_refl l0) as [pi'1 <-], (IHpi2 eq_refl l0) as [pi'2 <-].
+- cbn. destruct (IHpi1 eq_refl) as [pi'1 <-], (IHpi2 eq_refl) as [pi'2 <-].
   exists (sc_inter_right pi'1 pi'2). reflexivity.
-- cbn. destruct (IHpi eq_refl l0) as [pi' <-].
-  revert pi'. rewrite app_assoc. intro pi'.
+- cbn. destruct (IHpi eq_refl) as [pi' <-].
+  revert pi'. rewrite app_comm_cons. intro pi'.
   exists (sc_arrow_right pi'). reflexivity.
 - exists sc_var_left. reflexivity.
 Qed.
 
-(* Lemma 29 *)
-Lemma sc_var_right_wk p l x (pi : p ❘ l ⊦ var x) l0 : { pi' : p ❘ l ++ l0 ⊦ var x | sc_weight pi' = sc_weight pi }.
+Lemma sc_var_left_wk_gen x l c l0 (pi : var x ❘ l ⊦ c) :
+  { pi' : var x ❘ l0 ++ l ⊦ c | sc_weight pi' = sc_weight pi }.
 Proof.
-remember (var x) as c eqn:Ho. induction pi in Ho, l0 |- *; destr_eq Ho; subst.
-- cbn. destruct (IHpi eq_refl l0) as [pi'1 <-].
+induction l0 as [ | d l0 [IH IHs] ].
+- exists pi. reflexivity.
+- list_simpl.
+  destruct (sc_var_left_wk d IH) as [pi' Hs].
+  exists pi'. lia.
+Qed.
+
+(* Lemma 29 *)
+Lemma sc_var_right_wk p l x d (pi : p ❘ l ⊦ var x) : { pi' : p ❘ l · d ⊦ var x | sc_weight pi' = sc_weight pi }.
+Proof.
+remember (var x) as c eqn:Ho. induction pi in Ho |- *; destr_eq Ho; subst.
+- cbn. destruct (IHpi eq_refl) as [pi'1 <-].
   exists (sc_inter_left1 pi'1). reflexivity.
-- cbn. destruct (IHpi eq_refl l0) as [pi'1 <-].
+- cbn. destruct (IHpi eq_refl) as [pi'1 <-].
   exists (sc_inter_left2 pi'1). reflexivity.
-- cbn. destruct (IHpi2 eq_refl l0) as [pi'2 <-].
+- cbn. destruct (IHpi2 eq_refl) as [pi'2 <-].
   exists (sc_arrow_left pi1 pi'2). reflexivity.
 - exists sc_var_left. reflexivity.
-- cbn. destruct (IHpi2 eq_refl nil) as [pi'2 <-].
-  exists (sc_var_right pi1 pi'2). reflexivity.
+- cbn. exists (sc_var_right pi1 pi2). reflexivity.
+Qed.
+
+Lemma sc_var_right_wk_gen p l x l0 (pi : p ❘ l ⊦ var x) :
+  { pi' : p ❘ l ++ l0 ⊦ var x | sc_weight pi' = sc_weight pi }.
+Proof.
+induction l0 as [ | d l0 [IH IHs] ] using rev_rect.
+- rewrite app_nil_r. exists pi. reflexivity.
+- rewrite app_assoc.
+  destruct (sc_var_right_wk d IH) as [pi' Hs].
+  exists pi'. lia.
 Qed.
 
 
@@ -201,9 +220,9 @@ clear IH. split; [ split | ].
       revert pi Hs. rewrite app_nil_r. intros pi Hs.
       destruct (IH3 _ _ _ _ pi2_1 pi) as [pi' Hs']; [ cbn; unfold St in *; cbn in *; lia | ].
       revert pi Hs pi' Hs'. list_simpl. intros pi Hs pi' Hs'.
-      destruct (sc_var_right_wk pi' l0) as [pi'' Hs''].
+      destruct (sc_var_right_wk_gen l0 pi') as [pi'' Hs''].
       exists pi''. lia.
-  + destruct (sc_var_left_wk pi2 l) as [pi2' <-]. exists pi2'. lia.
+  + destruct (sc_var_left_wk_gen l pi2) as [pi2' <-]. exists pi2'. lia.
   + cbn in IH1, IH2. cbn. remember (St (var x)) as e eqn:He. destruct pi2; destr_eq He; subst.
     * exists sc_omega_right. cbn. lia.
     * destruct (IH2 _ _ _ _ _ (@sc_var_right _ _ _ l pi1_1 pi1_2) pi2_1) as [pi_1 Hs1]; [ cbn; lia | ].
@@ -268,7 +287,7 @@ revert a b Heqe c l Heql'. induction_sc_sub pi p x a' b' c' d' l pi1 pi2 IH1 IH2
   + split; [ right | ]; apply sc_arrow_right, (sc_None_left_rev _ _ Hl).
 - split.
   + left. apply (sc_None_left_rev _ _ pi1).
-  + apply (sc_var_right_wk pi2).
+  + apply (sc_var_right_wk_gen _ pi2).
 Qed.
 
 
@@ -404,7 +423,7 @@ induction_sc_sub pi p x a' b' c' d' l' pi1 pi2 IH1 IH2; intros s Hs0 a l Hl0 Hni
   + reflexivity.
   + repeat constructor.
     apply (sc_None_left_rev _ _ pi1).
-  + apply (sc_var_right_wk pi2).
+  + apply (sc_var_right_wk_gen _ pi2).
 Qed.
 
 Lemma sc_beta : beta_condition sc_sub_nil.
