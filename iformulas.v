@@ -1,7 +1,7 @@
 (* Intersection Types *)
 
 From Stdlib Require Import Bool PeanoNat Lia CMorphisms.
-From OLlibs Require Import Logic_Datatypes_more funtheory List_more SubListT dectype.
+From OLlibs Require Import Logic_Datatypes_more funtheory List_more SubListT dectype DecidableT.
 From InterPT Require lformulas.
 Import EqNotations LogicNotations.
 Export ListNotations.
@@ -9,16 +9,21 @@ Export ListNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
+
+
+Scheme All for prod.
+Scheme All for list.
 
 
 (** * Definition *)
 (* if [Atom] is in [Set] then proof types as well and then setoid_rewriting has troubles *)
 Definition Atom : Type := nat.
 
-Inductive form := var (_ : Atom) | omega | inter (_ _ : form) | arrow (_ _ : form).
-Notation Ω := omega.
+Inductive form := var of Atom | omega | inter of form & form | arrow of form & form.
+Abbreviation Ω := omega.
 Infix "∩" := inter (at level 35).
 Infix "→" := arrow (right associativity, at level 39).
 Coercion var : Atom >-> form.
@@ -102,8 +107,7 @@ Qed.
 
 (** ** Formula hereditary decomposition *)
 
-Inductive hdcp_tree :=
-| hdcmp_constr : list (list hdcp_tree * Atom) -> hdcp_tree.
+Inductive hdcp_tree := hdcmp_constr : list (list hdcp_tree * Atom) -> hdcp_tree.
 
 Fixpoint hrect P (IH : forall l, ForallT (fun '(z, _) => ForallT P z) l -> P (hdcmp_constr l)) s : P s :=
 match s with
@@ -355,9 +359,9 @@ induction a as [ x | | a1 IH1 a2 IH2 | a1 IH1 a2 IH2 ]; [ repeat constructor; re
     * apply R_arrow_compat_cov_l. assumption.
 Qed.
 
-Variable R_dec : forall a b, R a b + notT (R a b).
+Variable R_dec : forall a b, decidableT (R a b).
 
-Definition Rb a b := if R_dec a b then true else false.
+Definition Rb a b := if R_dec a b is inl _ then true else false.
 
 Definition beta'_condition := forall s a b, ForallT (fun z => fst z <> nil) s ->
   R (form_recomposition s) (a → b) ->

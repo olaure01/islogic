@@ -8,10 +8,11 @@ Export LogicNotations ListNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
-Lemma length_one_iffT_sgt A (l : list A) : (length l = 1%nat) <=> { a | l = [a] }.
+Lemma length_one_iffT_sgt A (l : list A) : length l = 1%nat <=> { a | l = [a] }.
 Proof.
 destruct l as [ | a [ | ? l ] ].
 - split; [ intros [=] | intros [? [=]] ].
@@ -71,7 +72,7 @@ Section WithParameter.
 
 Variable bp : bool.
 
-Notation lprove := (@lprove bp).
+Abbreviation lprove := (@lprove bp).
 Notation "l ⊦ a" := (lprove l a) (at level 65, format "l  ⊦  a").
 
 (** *** Weight *)

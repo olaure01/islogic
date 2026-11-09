@@ -1,3 +1,6 @@
+--rocq-package rocq-islogic
+-package rocq-ollibs
+
 # -arg "-mangle-names '__'"
 
 -R . InterPT

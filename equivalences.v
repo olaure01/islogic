@@ -8,13 +8,14 @@ Import LogicNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
 
 (** * Girard's Style Embedding of ∩IS₁ into Lambek *)
 
-Notation nn a := (lvar 0 / (lvar 1 / a)).
+Abbreviation nn a := (lvar 0 / (lvar 1 / a)).
 
 Fixpoint gtrans a :=
   match a with

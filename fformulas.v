@@ -8,18 +8,19 @@ Export ListNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
 
 (** ** Formulas *)
 
-Inductive fform := lvar (_ : comparison) (_ : nat) | lmap (_ _ : fform) | lfrl (_ : nat) (_ : fform).
+Inductive fform := lvar of comparison & nat | lmap of fform & fform | lfrl of nat & fform.
 
 Infix "→" := lmap (left associativity, at level 40).
-Notation cst := (lvar Lt).  (* propositional constants *)
-Notation dvar := (lvar Eq). (* de Bruijn indices *)
-Notation var := (lvar Gt).  (* second order variables *)
+Abbreviation cst := (lvar Lt).  (* propositional constants *)
+Abbreviation dvar := (lvar Eq). (* de Bruijn indices *)
+Abbreviation var := (lvar Gt).  (* second order variables *)
 Notation "∀" := lfrl.
 
 (** Size *)
@@ -37,7 +38,7 @@ match A with
 | lmap B C => (freevars B) ++ (freevars C)
 | lfrl X B => remove Nat.eq_dec X (freevars B)
 end.
-Notation closed A := (freevars A = nil).
+Abbreviation closed A := (freevars A = nil).
 
 Lemma closed_fold_lmap a l : closed (fold_right lmap a l) <=> ForallT (fun u => closed u) (a :: l).
 Proof.
@@ -207,7 +208,7 @@ match A with
 | lmap B C => lmap (fup k B) (fup k C)
 | lfrl X B => lfrl X (fup k B)
 end.
-Notation fupz := (fup 0).
+Abbreviation fupz := (fup 0).
 
 Lemma fup_lvar k v x : { y & fup k (lvar v x) = lvar v y }.
 Proof.
