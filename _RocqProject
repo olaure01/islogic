@@ -1,3 +1,6 @@
+--rocq-package rocq-isbcd-fixpoints
+-package rocq-stdlib
+
 # -arg "-mangle-names '__'"
 
 .
