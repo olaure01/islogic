@@ -8,6 +8,7 @@ Import LogicNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
@@ -206,7 +207,7 @@ match b, a, l with
 | Ω, _, _              => fun _ => true
 | e ∩ f, _, _          => fun F => F (l, a, e) ltac:(do 2 constructor) && F (l, a, f) ltac:(do 2 constructor)
 | e → f, _, _          => fun F => F (l · e, a, f) ltac:(do 2 constructor)
-| var x, c ∩ d, _      => fun F =>    F (l, c, var x) ltac:(do 2 constructor)
+| var x, c ∩ d, _      => fun F =>    F (l, c, var x) ltac:(constructor; apply trel_inter_l_1)
                                    || F (l, d, var x) ltac:(do 2 constructor)
 | var x, c → d, h :: t => fun F =>    F (nil, h, c) ltac:(do 2 constructor)
                                    && F (t, d, var x) ltac:(do 2 constructor)

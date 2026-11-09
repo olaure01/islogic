@@ -9,8 +9,12 @@ Import EqNotations LogicNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
+
+
+Scheme All for ForallT.
 
 
 (* Transparent version of [ForallT_app] *)

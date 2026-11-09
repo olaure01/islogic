@@ -8,6 +8,7 @@ Export ListNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
@@ -16,9 +17,9 @@ Unset Printing Use Implicit Types.
 
 (** ** Formulas *)
 
-Inductive lform := lvar (_ : iformulas.Atom) | ltop | lwith (_ _ : lform) | lmap  (_ _ : lform).
+Inductive lform := lvar of iformulas.Atom | ltop | lwith of lform & lform | lmap of lform & lform.
 
-Notation 𝖳 := ltop.
+Abbreviation 𝖳 := ltop.
 Infix "∧" := lwith (at level 35).
 Notation "b / a" := (lmap a b) (left associativity, at level 40, a at next level).
 Coercion lvar : iformulas.Atom >-> lform.

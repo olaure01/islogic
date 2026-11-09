@@ -7,6 +7,7 @@ Export ListNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
@@ -14,21 +15,20 @@ Unset Printing Use Implicit Types.
 (** ** Formulas *)
 
 Inductive lform :=
-| lvar (_ : comparison) (_ : nat) | lmap (_ _ : lform)
-| ltop | lwith (_ _ : lform)
-| lzero | lplus (_ _ : lform)
+| lvar of comparison & nat | lmap of lform & lform
+| ltop | lwith of lform & lform | lzero | lplus of lform & lform
 | lone
-| lfrl (_ : nat) (_ : lform) | lexs (_ : nat) (_ : lform).
+| lfrl of nat & lform | lexs of nat & lform.
 
-Notation 𝖳 := ltop.
+Abbreviation 𝖳 := ltop.
 Infix "∧" := lwith (at level 35).
 Notation "b / a" := (lmap a b) (left associativity, at level 40, a at next level).
 Notation "0" := lzero.
 Infix "∨" := lplus (at level 35).
 Notation "1" := lone.
-Notation cst := (lvar Lt).  (* propositional constants *)
-Notation dvar := (lvar Eq). (* de Bruijn indices *)
-Notation var := (lvar Gt).  (* second order variables *)
+Abbreviation cst := (lvar Lt).  (* propositional constants *)
+Abbreviation dvar := (lvar Eq). (* de Bruijn indices *)
+Abbreviation var := (lvar Gt).  (* second order variables *)
 Notation "∀" := lfrl.
 Notation "∃" := lexs.
 
@@ -92,7 +92,7 @@ match A with
 | lmap B C | lwith B C | lplus B C => (freevars B) ++ (freevars C)
 | lfrl X B | lexs X B => remove Nat.eq_dec X (freevars B)
 end.
-Notation closed A := (freevars A = nil).
+Abbreviation closed A := (freevars A = nil).
 
 Lemma freevars_nsubs n f (Hc : closed f) a : freevars (nsubs n f a) = freevars a.
 Proof.
@@ -155,7 +155,7 @@ match A with
 | lfrl X B => lfrl X (fup k B)
 | lexs X B => lexs X (fup k B)
 end.
-Notation fupz := (fup 0).
+Abbreviation fupz := (fup 0).
 
 Lemma fup_fup_com k a : fup (S k) (fupz a) = fupz (fup k a).
 Proof.

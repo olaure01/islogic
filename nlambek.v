@@ -8,6 +8,7 @@ Export ListNotations.
 (* Set Mangle Names. Set Mangle Names Light. *)
 Set Default Goal Selector "!".
 Set Default Proof Using "Type".
+Set Proof Using Clear Unused.
 Set Implicit Arguments.
 Unset Printing Use Implicit Types.
 
@@ -741,7 +742,7 @@ End WithCut.
 
 
 
-Notation nn a := (cst 0 / (cst 1 / a)).
+Abbreviation nn a := (cst 0 / (cst 1 / a)).
 
 Lemma fup_nn k a : fup k (nn a) = nn (fup k a).
 Proof. induction a; auto. Qed.
